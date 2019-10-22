@@ -1,9 +1,9 @@
 {
   "name": "shopping-cart",
   "autoload": {
-    "psr-4": {
-      "src\\": "src"
-    }
+    "classmap": [
+      "src/"
+    ]
   },
   "autoload-dev": {
     "psr-4": {

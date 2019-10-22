@@ -1,5 +1,6 @@
 <?php
 
+use Service\ProductService;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -15,6 +16,11 @@ class ProductServiceTest extends TestCase
 
     /** @var ProductService */
     private $productService;
+
+    protected function setUp(): void
+    {
+        $this->productService = new ProductService();
+    }
 
     public function testAddProduct()
     {
@@ -36,11 +42,6 @@ class ProductServiceTest extends TestCase
         $this->assertSame($price, $product->getPrice());
         $this->assertSame($currency, $product->getCurrency());
 
-    }
-
-    protected function setUp(): void
-    {
-       $this->productService = new ProductService();
     }
 
 
