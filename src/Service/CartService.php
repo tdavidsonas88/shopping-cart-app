@@ -17,6 +17,9 @@ class CartService
     /** @var Cart */
     private $cart;
 
+    /** @var float */
+    private $cartsTotal;
+
     /**
      * CartService constructor.
      */
@@ -70,12 +73,12 @@ class CartService
         $this->cart = $cart;
     }
 
-    public function addProduct(Product $product)
+    private function addProduct(Product $product)
     {
         $this->cart->getProducts()->add($product);
     }
 
-    public function removeProduct(string $id)
+    private function removeProduct(string $id)
     {
         $existingCartProduct = $this->findCartProductById($id);
         if ($existingCartProduct) {
@@ -83,7 +86,7 @@ class CartService
         }
     }
 
-    public function updateProduct(Product $existingCartProduct, Product $product)
+    private function updateProduct(Product $existingCartProduct, Product $product)
     {
         $existingCartProduct->setCurrency($product->getCurrency());
         $existingCartProduct->setName($product->getName());
@@ -106,6 +109,14 @@ class CartService
             });
         $existingCartProduct = $existingCartProducts->first();
         return $existingCartProduct;
+    }
+
+    public function calculateCartsTotal()
+    {
+        $products = $this->cart->getProducts();
+        foreach ($products as $product) {
+            // todo: pabaigti
+        }
     }
 
 }
