@@ -6,6 +6,8 @@
  * Time: 18.57
  */
 
+namespace Data;
+
 class Product
 {
     /** @var int */
