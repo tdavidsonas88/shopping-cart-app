@@ -36,7 +36,6 @@ class Product
         $this->currency = $currency;
     }
 
-
     /**
      * @return int
      */
