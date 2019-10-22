@@ -53,11 +53,10 @@ class CartService
                 $this->addProduct($product);
             }
         } else if ($quantity <= -1) {
-            $this->cart->removeProduct($product);
+            $this->removeProduct($product);
         } else if ($quantity == 0) {
             throw new \Exception('Nenumatyta situacija');
         }
-
         return $product;
     }
 

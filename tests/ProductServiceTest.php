@@ -29,33 +29,16 @@ class ProductServiceTest extends TestCase
     /**
      * @throws Exception
      */
-    public function testUpsertProductWhenQuantityIsOneOrMore()
+    public function testUpsertProduct()
     {
-//        mbp;Macbook Pro;2;29.99;EUR
-        $id = "mbp";
-        $name = "Macbook Pro";
-        $quantity = 1;
-        $price = "29.99";
-        $currency = "EUR";
-
-        /** @var Cart $cart */
-        $this->cartService->upsertProduct(
-          $id, $name, $quantity, $price, $currency
-        );
-        /** @var Cart $cart */
-        $cart = $this->cartService->getCart();
-
-        $this->assertSame(1, $cart->getProducts()->count());
-        /** @var Product $product */
-        $product = $cart->getProducts()->first();
-        $this->assertSame($id, $product->getId());
-        $this->assertSame($name, $product->getName());
-        $this->assertSame($quantity, $product->getQuantity());
-        $this->assertSame($price, $product->getPrice());
-        $this->assertSame($currency, $product->getCurrency());
+        $this->upsertProductWhenQuantityIsOneOrMore();
+        $this->upsertProductWhenQuantityIsMinusOneOrLess();
     }
 
-    public function testUpsertProductWhenQuantityIsMinusOneOrLess()
+    /**
+     * @throws Exception
+     */
+    private function upsertProductWhenQuantityIsMinusOneOrLess()
     {
         $id = "mbp";
         $name = "Macbook Pro";
@@ -75,6 +58,27 @@ class ProductServiceTest extends TestCase
         $this->assertSame($currency, $product->getCurrency());
     }
 
+    /**
+     * @throws Exception
+     */
+    private function upsertProductWhenQuantityIsOneOrMore(): void
+    {
+//        mbp;Macbook Pro;2;29.99;EUR
+        $id = "mbp";
+        $name = "Macbook Pro";
+        $quantity = -1;
+        $price = "29.99";
+        $currency = "EUR";
+
+        /** @var Cart $cart */
+        $this->cartService->upsertProduct(
+            $id, $name, $quantity, $price, $currency
+        );
+        /** @var Cart $cart */
+        $cart = $this->cartService->getCart();
+
+        $this->assertSame(0, $cart->getProducts()->count());
+    }
 
 
 }
