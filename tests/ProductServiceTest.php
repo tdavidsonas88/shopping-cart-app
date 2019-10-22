@@ -41,7 +41,6 @@ class ProductServiceTest extends TestCase
         $this->assertSame($quantity, $product->getQuantity());
         $this->assertSame($price, $product->getPrice());
         $this->assertSame($currency, $product->getCurrency());
-
     }
 
 

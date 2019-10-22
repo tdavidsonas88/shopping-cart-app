@@ -8,6 +8,8 @@
 
 namespace Service;
 
+use Product;
+
 class ProductService
 {
     /**
@@ -20,7 +22,7 @@ class ProductService
      */
     public function addProduct($id, $name, $quantity, $price, $currency)
     {
-        $product = new \Product($id, $name, $quantity, $price, $currency);
+        $product = new Product($id, $name, $quantity, $price, $currency);
         return $product;
     }
 }
