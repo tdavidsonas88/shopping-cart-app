@@ -10,7 +10,7 @@ namespace Data;
 
 class Product
 {
-    /** @var int */
+    /** @var string */
     private $id;
     /** @var string */
     private $name;

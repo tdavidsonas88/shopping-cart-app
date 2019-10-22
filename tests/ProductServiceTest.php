@@ -32,6 +32,7 @@ class ProductServiceTest extends TestCase
     public function testUpsertProduct()
     {
         $this->upsertProductWhenQuantityIsOneOrMore();
+        $this->upsertProductWhenUpdateIsTriggered();
         $this->upsertProductWhenQuantityIsMinusOneOrLess();
     }
 
@@ -51,11 +52,9 @@ class ProductServiceTest extends TestCase
             $id, $name, $quantity, $price, $currency
         );
 
-        $this->assertSame($id, $product->getId());
-        $this->assertSame($name, $product->getName());
-        $this->assertSame($quantity, $product->getQuantity());
-        $this->assertSame($price, $product->getPrice());
-        $this->assertSame($currency, $product->getCurrency());
+        /** @var Cart $cart */
+        $cart = $this->cartService->getCart();
+        $this->assertSame(0, $cart->getProducts()->count());
     }
 
     /**
@@ -66,7 +65,7 @@ class ProductServiceTest extends TestCase
 //        mbp;Macbook Pro;2;29.99;EUR
         $id = "mbp";
         $name = "Macbook Pro";
-        $quantity = -1;
+        $quantity = 1;
         $price = "29.99";
         $currency = "EUR";
 
@@ -76,8 +75,47 @@ class ProductServiceTest extends TestCase
         );
         /** @var Cart $cart */
         $cart = $this->cartService->getCart();
+        $this->assertSame(1, $cart->getProducts()->count());
 
-        $this->assertSame(0, $cart->getProducts()->count());
+        /** @var Product $product */
+        $product = $cart->getProducts()->first();
+
+        $this->assertSame($id, $product->getId());
+        $this->assertSame($name, $product->getName());
+        $this->assertSame($quantity, $product->getQuantity());
+        $this->assertSame($price, $product->getPrice());
+        $this->assertSame($currency, $product->getCurrency());
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function upsertProductWhenUpdateIsTriggered(): void
+    {
+//        mbp;Macbook Pro;2;29.99;EUR
+        $id = "mbp";
+        $name = "Macbook Pro 2";
+        $quantity = 2;
+        $price = "2";
+        $currency = "USD";
+
+        /** @var Cart $cart */
+        $this->cartService->upsertProduct(
+            $id, $name, $quantity, $price, $currency
+        );
+        /** @var Cart $cart */
+        $cart = $this->cartService->getCart();
+
+        $this->assertSame(1, $cart->getProducts()->count());
+
+        /** @var Product $product */
+        $product = $cart->getProducts()->first();
+
+        $this->assertSame($id, $product->getId());
+        $this->assertSame($name, $product->getName());
+        $this->assertSame($quantity, $product->getQuantity());
+        $this->assertSame($price, $product->getPrice());
+        $this->assertSame($currency, $product->getCurrency());
     }
 
 

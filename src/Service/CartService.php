@@ -25,7 +25,6 @@ class CartService
         $this->cart = new Cart();
     }
 
-
     /**
      * @param $id
      * @param $name
@@ -38,22 +37,17 @@ class CartService
     public function upsertProduct($id, $name, $quantity, $price, $currency)
     {
         $product = new Product($id, $name, $quantity, $price, $currency);
-
         //  If quantity is 1 or more then product is being added/updated,
         //  if quantity is -1 or less, then product is being removed from shopping cart.
         if ($quantity >= 1) {
-            /** @var ArrayCollection $existingCartProduct */
-            $existingCartProduct = $this->cart->getProducts()->filter(
-                function(Product $product) use ($id) {
-                    return $product->getId() === $id;
-                });
-            if ($existingCartProduct->first()) {
-                $this->updateProduct($existingCartProduct->first(), $product);
+            $existingCartProduct = $this->findCartProductById($id);
+            if ($existingCartProduct) {
+                $this->updateProduct($existingCartProduct, $product);
             } else {
                 $this->addProduct($product);
             }
         } else if ($quantity <= -1) {
-            $this->removeProduct($product);
+            $this->removeProduct($product->getId());
         } else if ($quantity == 0) {
             throw new \Exception('Nenumatyta situacija');
         }
@@ -81,9 +75,12 @@ class CartService
         $this->cart->getProducts()->add($product);
     }
 
-    public function removeProduct(Product $product)
+    public function removeProduct(string $id)
     {
-        $this->cart->getProducts()->removeElement($product);
+        $existingCartProduct = $this->findCartProductById($id);
+        if ($existingCartProduct) {
+            $this->cart->getProducts()->removeElement($existingCartProduct);
+        }
     }
 
     public function updateProduct(Product $existingCartProduct, Product $product)
@@ -91,7 +88,23 @@ class CartService
         $existingCartProduct->setCurrency($product->getCurrency());
         $existingCartProduct->setName($product->getName());
         $existingCartProduct->setPrice($product->getPrice());
-        $existingCartProduct->setQuantity($product->setQuantity());
+        $existingCartProduct->setQuantity($product->getQuantity());
+        return $existingCartProduct;
+    }
+
+    /**
+     * @param $id
+     * @param $existingCartProduct
+     * @return ArrayCollection|mixed
+     */
+    private function findCartProductById($id)
+    {
+        /** @var ArrayCollection $existingCartProduct */
+        $existingCartProducts = $this->cart->getProducts()->filter(
+            function (Product $product) use ($id) {
+                return $product->getId() === $id;
+            });
+        $existingCartProduct = $existingCartProducts->first();
         return $existingCartProduct;
     }
 
