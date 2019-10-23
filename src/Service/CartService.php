@@ -14,6 +14,19 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 class CartService
 {
+//    EUR:USD - 1:1.14, EUR:GBP - 1:0.88
+    const USD = 'USD';
+    const GBP = 'GBP';
+    const EUR = 'EUR';
+
+    const DEFAULT_CURRENCY = self::EUR;
+
+    const VALIUTOS_MAP = [
+        self::EUR => 1,
+        self::USD => 1.14,
+        self::GBP => 0.88
+    ];
+
     /** @var Cart */
     private $cart;
 
@@ -37,21 +50,20 @@ class CartService
      * @return Product
      * @throws \Exception
      */
-    public function upsertProduct($id, $name, $quantity, $price, $currency)
+    public function upsertProduct(Product $product)
     {
-        $product = new Product($id, $name, $quantity, $price, $currency);
         //  If quantity is 1 or more then product is being added/updated,
         //  if quantity is -1 or less, then product is being removed from shopping cart.
-        if ($quantity >= 1) {
-            $existingCartProduct = $this->findCartProductById($id);
+        if ($product->getQuantity() >= 1) {
+            $existingCartProduct = $this->findCartProductById($product->getId());
             if ($existingCartProduct) {
                 $this->updateProduct($existingCartProduct, $product);
             } else {
                 $this->addProduct($product);
             }
-        } else if ($quantity <= -1) {
+        } else if ($product->getQuantity() <= -1) {
             $this->removeProduct($product->getId());
-        } else if ($quantity == 0) {
+        } else if ($product->getQuantity() == 0) {
             throw new \Exception('Nenumatyta situacija');
         }
         return $product;
@@ -111,12 +123,18 @@ class CartService
         return $existingCartProduct;
     }
 
-    public function calculateCartsTotal()
+    /**
+     * @return float|int
+     */
+    public function calculateCartsTotalInDefaultCurrency()
     {
+        $this->cartsTotal = 0;
+        /** @var ArrayCollection|Product[] $products */
         $products = $this->cart->getProducts();
         foreach ($products as $product) {
-            // todo: pabaigti
+            $this->cartsTotal += CartServiceHelper::calculateProductPrice($product);
         }
+        return $this->cartsTotal;
     }
 
 }

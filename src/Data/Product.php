@@ -33,8 +33,8 @@ class Product
     {
         $this->id = $id;
         $this->name = $name;
-        $this->quantity = $quantity;
-        $this->price = $price;
+        $this->quantity = intval($quantity);
+        $this->price = floatval($price);
         $this->currency = $currency;
     }
 
