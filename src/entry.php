@@ -6,28 +6,27 @@
  * Time: 21.54
  */
 
+use Data\Product;
 use Service\CartService;
 use Service\FileReaderService;
-
-//require_once('Service/FileReaderService.php');
-//require_once('Service/CartService.php');
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
 /** @var string[] $lines */
 $lines = FileReaderService::readFileIntoArray('input.txt');
 
-foreach ($lines as $line) {
-    list($id, $name, $quantity, $price, $currency) = explode(";", $line);
+$cartService = new CartService();
 
-    $cartService = new CartService();
+foreach ($lines as $line) {
+    list($id, $name, $quantity, $price, $currency) = explode(";", str_replace(array(","), ";",$line));
+    $product = new Product($id, $name, $quantity, $price, $currency);
+
     try {
-        $cartService->upsertProduct($id, $name, $quantity, $price, $currency);
+        $cartService->upsertProduct($product);
+        $cartsTotal = $cartService->updateCartsTotalInDefaultCurrency();
+        echo $cartsTotal;
+        echo "\n";
     } catch (Exception $e) {
         echo $e->getMessage();
     }
-    /** @var \Data\Cart $cart */
-    $cart = $cartService->getCart();
-
-    print_r($cart);
 }

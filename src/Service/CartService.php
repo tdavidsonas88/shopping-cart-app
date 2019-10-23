@@ -96,7 +96,8 @@ class CartService
         $existingCartProduct = $this->findCartProductById($id);
         if ($existingCartProduct) {
             $existingQuantity = $existingCartProduct->getQuantity();
-            $leftQuantity = $existingQuantity - $quantity;
+            // quantity is already negative
+            $leftQuantity = $existingQuantity + $quantity;
             if ($leftQuantity > 0) {
                 $existingCartProduct->setQuantity($leftQuantity);
             } else {
@@ -149,7 +150,7 @@ class CartService
     /**
      * @return float|int
      */
-    public function calculateCartsTotalInDefaultCurrency()
+    public function updateCartsTotalInDefaultCurrency()
     {
         $this->cartsTotal = 0;
         /** @var ArrayCollection|Product[] $products */
