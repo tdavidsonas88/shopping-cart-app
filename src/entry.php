@@ -20,7 +20,6 @@ $cartService = new CartService();
 foreach ($lines as $line) {
     list($id, $name, $quantity, $price, $currency) = explode(";", str_replace(array(","), ";",$line));
     $product = new Product($id, $name, $quantity, $price, $currency);
-
     try {
         $cartService->upsertProduct($product);
         $cartsTotal = $cartService->updateCartsTotalInDefaultCurrency();
