@@ -55,14 +55,14 @@ class CartService
         //  If quantity is 1 or more then product is being added/updated,
         //  if quantity is -1 or less, then product is being removed from shopping cart.
         if ($product->getQuantity() >= 1) {
-            $existingCartProduct = $this->findCartProductById($product->getId());
+            $existingCartProduct = $this->findIdenticalCartProduct($product);
             if ($existingCartProduct) {
                 $this->updateProduct($existingCartProduct, $product);
             } else {
                 $this->addProduct($product);
             }
         } else if ($product->getQuantity() <= -1) {
-            $this->removeProduct($product->getId());
+            $this->removeProducts($product->getId(), $product->getQuantity());
         } else if ($product->getQuantity() == 0) {
             throw new \Exception('Nenumatyta situacija');
         }
@@ -90,20 +90,24 @@ class CartService
         $this->cart->getProducts()->add($product);
     }
 
-    private function removeProduct(string $id)
+    private function removeProducts(string $id, int $quantity)
     {
+        /** @var Product $existingCartProduct */
         $existingCartProduct = $this->findCartProductById($id);
         if ($existingCartProduct) {
-            $this->cart->getProducts()->removeElement($existingCartProduct);
+            $existingQuantity = $existingCartProduct->getQuantity();
+            $leftQuantity = $existingQuantity - $quantity;
+            if ($leftQuantity > 0) {
+                $existingCartProduct->setQuantity($leftQuantity);
+            } else {
+                $this->cart->getProducts()->removeElement($existingCartProduct);
+            }
         }
     }
 
     private function updateProduct(Product $existingCartProduct, Product $product)
     {
-        $existingCartProduct->setCurrency($product->getCurrency());
-        $existingCartProduct->setName($product->getName());
-        $existingCartProduct->setPrice($product->getPrice());
-        $existingCartProduct->setQuantity($product->getQuantity());
+        $existingCartProduct->setQuantity($product->getQuantity() + 1);
         return $existingCartProduct;
     }
 
@@ -112,13 +116,32 @@ class CartService
      * @param $existingCartProduct
      * @return ArrayCollection|mixed
      */
-    private function findCartProductById($id)
+    private function findIdenticalCartProduct(Product $newProduct)
+    {
+        /** @var ArrayCollection $existingCartProduct */
+        $existingCartProducts = $this->cart->getProducts()->filter(
+            function (Product $product) use ($newProduct) {
+                return $product->getId() === $newProduct->getId()
+                    && $product->getCurrency() === $newProduct->getCurrency()
+                    && $product->getPrice() === $newProduct->getPrice()
+                    && $product->getName() === $newProduct->getName();
+            });
+        $existingCartProduct = $existingCartProducts->first();
+        return $existingCartProduct;
+    }
+
+    /**
+     * @param string $id
+     * @return Product
+     */
+    private function findCartProductById(string $id)
     {
         /** @var ArrayCollection $existingCartProduct */
         $existingCartProducts = $this->cart->getProducts()->filter(
             function (Product $product) use ($id) {
                 return $product->getId() === $id;
             });
+        /** @var Product $existingCartProduct */
         $existingCartProduct = $existingCartProducts->first();
         return $existingCartProduct;
     }
