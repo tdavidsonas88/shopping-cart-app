@@ -30,13 +30,20 @@ class CartService
     /** @var Cart */
     private $cart;
 
+    /** @var ProductPrice */
+    private $productPrice;
+
     /**
      * CartService constructor.
+     * @param Cart $cart
+     * @param ProductPrice $productPrice
      */
-    public function __construct()
+    public function __construct(Cart $cart, ProductPrice $productPrice)
     {
-        $this->cart = new Cart();
+        $this->cart = $cart;
+        $this->productPrice = $productPrice;
     }
+
 
     /**
      * @param $id
@@ -146,6 +153,7 @@ class CartService
 
     /**
      * @return float|int
+     * @throws \Exception
      */
     public function updateCartsTotalInDefaultCurrency()
     {
@@ -153,7 +161,7 @@ class CartService
         /** @var ArrayCollection|Product[] $products */
         $products = $this->cart->getProducts();
         foreach ($products as $product) {
-            $cartsTotal += CartServiceHelper::calculateProductPrice($product);
+            $cartsTotal += $this->productPrice->calculateProductPrice($product);
         }
         return $cartsTotal;
     }

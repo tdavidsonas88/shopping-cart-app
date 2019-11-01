@@ -4,6 +4,7 @@ use Data\Cart;
 use Data\Product;
 use Service\CartService;
 use PHPUnit\Framework\TestCase;
+use Service\ProductPrice;
 
 /**
  * Created by PhpStorm.
@@ -13,17 +14,29 @@ use PHPUnit\Framework\TestCase;
  */
 class CartServiceTest extends TestCase
 {
+//    EUR:USD - 1:1.14, EUR:GBP - 1:0.88
+    const USD = 'USD';
+    const GBP = 'GBP';
+    const EUR = 'EUR';
+
+    const DEFAULT_CURRENCY = self::EUR;
+
+    const VALIUTOS_MAP = [
+        self::EUR => 1,
+        self::USD => 1.14,
+        self::GBP => 0.88
+    ];
 
     /** @var CartService */
     private $cartService;
-
     /** @var Cart */
     private $cart;
 
     protected function setUp(): void
     {
-        $this->cartService = new CartService();
-        $this->cart = $this->cartService->getCart();
+        $this->cart = new Cart();
+        $productPrice = new ProductPrice(self::VALIUTOS_MAP);
+        $this->cartService = new CartService($this->cart, $productPrice);
     }
 
     /**
