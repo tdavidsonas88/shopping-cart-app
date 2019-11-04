@@ -6,16 +6,23 @@
  * Time: 21.54
  */
 
+use Data\Cart;
 use Data\Product;
 use Service\CartService;
 use Service\FileReaderService;
+use Service\ProductPrice;
 
 require_once __DIR__ . '/../vendor/autoload.php';
+
+
 
 /** @var string[] $lines */
 $lines = FileReaderService::readFileIntoArray('input.txt');
 
-$cartService = new CartService();
+$cart = new Cart();
+$productPrice = new ProductPrice(Product::VALIUTOS_MAP);
+
+$cartService = new CartService($cart, $productPrice);
 
 foreach ($lines as $line) {
     list($id, $name, $quantity, $price, $currency) = explode(";", str_replace(array(","), ";",$line));

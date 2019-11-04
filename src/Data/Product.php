@@ -10,6 +10,19 @@ namespace Data;
 
 class Product
 {
+    //    EUR:USD - 1:1.14, EUR:GBP - 1:0.88
+    const USD = 'USD';
+    const GBP = 'GBP';
+    const EUR = 'EUR';
+
+    const DEFAULT_CURRENCY = self::EUR;
+
+    const VALIUTOS_MAP = [
+        self::EUR => 1,
+        self::USD => 1.14,
+        self::GBP => 0.88
+    ];
+
     /** @var string */
     private $id;
     /** @var string */
