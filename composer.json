@@ -1,5 +1,6 @@
 {
-  "name": "shopping-cart",
+  "name": "shopping-cart-app/shopping-cart-app",
+  "description": "shopping cart app for Invertus company task. Developed and refactored by Tadas. Reviewed by Rokas Zygmantas",
   "autoload": {
     "classmap": [
       "src/"
@@ -16,5 +17,6 @@
   },
   "require-dev": {
     "phpunit/phpunit": "^8"
-  }
+  },
+  "license": "OSL-3.0"
 }
