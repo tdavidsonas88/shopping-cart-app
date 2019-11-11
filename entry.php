@@ -12,12 +12,12 @@ use Service\CartService;
 use Service\FileReaderService;
 use Service\ProductPrice;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
 
 
 /** @var string[] $lines */
-$lines = FileReaderService::readFileIntoArray('input.txt');
+$lines = FileReaderService::readFileIntoArray('src/input.txt');
 
 $cart = new Cart();
 $productPrice = new ProductPrice(Product::VALIUTOS_MAP);
