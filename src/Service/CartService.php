@@ -104,6 +104,8 @@ class CartService
     }
 
     /**
+     * todo: float tipo kintamajam nenaudoti ===
+     *
      * @param $id
      * @param $existingCartProduct
      * @return ArrayCollection|mixed
