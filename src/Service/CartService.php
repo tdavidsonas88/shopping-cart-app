@@ -104,21 +104,21 @@ class CartService
     }
 
     /**
-     * todo: float tipo kintamajam nenaudoti ===
      *
-     * @param $id
-     * @param $existingCartProduct
+     * @param Product $newProduct
      * @return ArrayCollection|mixed
      */
     private function findIdenticalCartProduct(Product $newProduct)
     {
         /** @var ArrayCollection $existingCartProduct */
         $existingCartProducts = $this->cart->getProducts()->filter(
-            function (Product $product) use ($newProduct) {
-                return $product->getId() === $newProduct->getId()
-                    && $product->getCurrency() === $newProduct->getCurrency()
-                    && $product->getPrice() === $newProduct->getPrice()
-                    && $product->getName() === $newProduct->getName();
+            function (Product $existingProduct) use ($newProduct) {
+                // data needed for comparing the floats
+
+                return $existingProduct->getId() === $newProduct->getId()
+                    && $existingProduct->getCurrency() === $newProduct->getCurrency()
+                    && \Utils::floatsAreEqual($existingProduct->getPrice(), $newProduct->getPrice())
+                    && $existingProduct->getName() === $newProduct->getName();
             });
         $existingCartProduct = $existingCartProducts->first();
         return $existingCartProduct;
