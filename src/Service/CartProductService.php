@@ -12,14 +12,14 @@ use Data\Cart;
 use Data\Product;
 use Doctrine\Common\Collections\ArrayCollection;
 
-class CartService
+class CartProductService
 {
 
     /** @var Cart */
     private $cart;
 
     /**
-     * CartService constructor.
+     * CartProductService constructor.
      * @param Cart $cart
      */
     public function __construct(Cart $cart)

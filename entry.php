@@ -8,7 +8,7 @@
 
 use Data\Cart;
 use Data\Product;
-use Service\CartService;
+use Service\CartProductService;
 use Service\FileReaderService;
 use Service\CartPriceCalculator;
 
@@ -20,7 +20,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 $lines = FileReaderService::readFileIntoArray('src/input.txt');
 
 $cart = new Cart();
-$cartService = new CartService($cart);
+$cartService = new CartProductService($cart);
 $cartPriceCalculator = new CartPriceCalculator($cart, Product::VALIUTOS_MAP);
 
 

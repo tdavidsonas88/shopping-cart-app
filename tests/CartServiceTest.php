@@ -2,7 +2,7 @@
 
 use Data\Cart;
 use Data\Product;
-use Service\CartService;
+use Service\CartProductService;
 use PHPUnit\Framework\TestCase;
 use Service\CartPriceCalculator;
 
@@ -27,7 +27,7 @@ class CartServiceTest extends TestCase
         self::GBP => 0.88
     ];
 
-    /** @var CartService */
+    /** @var CartProductService */
     private $cartService;
     /** @var Cart */
     private $cart;
@@ -38,7 +38,7 @@ class CartServiceTest extends TestCase
     {
         $this->cart = new Cart();
         $this->cartPriceCalculator = new CartPriceCalculator($this->cart, self::VALIUTOS_MAP);
-        $this->cartService = new CartService($this->cart);
+        $this->cartService = new CartProductService($this->cart);
     }
 
     /**
