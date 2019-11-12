@@ -4,7 +4,7 @@ use Data\Cart;
 use Data\Product;
 use Service\CartService;
 use PHPUnit\Framework\TestCase;
-use Service\ProductPrice;
+use Service\CartPriceCalculator;
 
 /**
  * Created by PhpStorm.
@@ -31,12 +31,14 @@ class CartServiceTest extends TestCase
     private $cartService;
     /** @var Cart */
     private $cart;
+    /** @var CartPriceCalculator */
+    private $cartPriceCalculator;
 
     protected function setUp(): void
     {
         $this->cart = new Cart();
-        $productPrice = new ProductPrice(self::VALIUTOS_MAP);
-        $this->cartService = new CartService($this->cart, $productPrice);
+        $this->cartPriceCalculator = new CartPriceCalculator($this->cart, self::VALIUTOS_MAP);
+        $this->cartService = new CartService($this->cart);
     }
 
     /**
@@ -55,7 +57,7 @@ class CartServiceTest extends TestCase
         $product = new Product($id, $name, $quantity, $price, $currency);
         $this->cartService->upsertProduct($product);
         $this->assertSame(1, $this->cart->getProducts()->count());
-        $total = $this->cartService->updateCartsTotalInDefaultCurrency();
+        $total = $this->cartPriceCalculator->updateCartsTotalInDefaultCurrency();
         $this->assertSame(2*$price, $total);
 
         //zen;Asus Zenbook;3;99.99;USD
@@ -67,7 +69,7 @@ class CartServiceTest extends TestCase
         $product = new Product($id, $name, $quantity, $price, $currency);
         $this->cartService->upsertProduct($product);
         $this->assertSame(2, $this->cart->getProducts()->count());
-        $total = $this->cartService->updateCartsTotalInDefaultCurrency();
+        $total = $this->cartPriceCalculator->updateCartsTotalInDefaultCurrency();
         $this->assertSame(323.11157894736846, $total);
 
         //mbp,Macbook Pro;5,100.09,GBP
@@ -79,7 +81,7 @@ class CartServiceTest extends TestCase
         $product = new Product($id, $name, $quantity, $price, $currency);
         $this->cartService->upsertProduct($product);
         $this->assertSame(3, $this->cart->getProducts()->count());
-        $total = $this->cartService->updateCartsTotalInDefaultCurrency();
+        $total = $this->cartPriceCalculator->updateCartsTotalInDefaultCurrency();
         $this->assertSame(891.8047607655503, $total);
 
 
@@ -92,7 +94,7 @@ class CartServiceTest extends TestCase
         $product = new Product($id, $name, $quantity, $price, $currency);
         $this->cartService->upsertProduct($product);
         $this->assertSame(3, $this->cart->getProducts()->count());
-        $total = $this->cartService->updateCartsTotalInDefaultCurrency();
+        $total = $this->cartPriceCalculator->updateCartsTotalInDefaultCurrency();
         $this->assertSame(804.0942344497608, $total);
 
         //len;Lenovo P1;8;60.33;USD
@@ -104,7 +106,7 @@ class CartServiceTest extends TestCase
         $product = new Product($id, $name, $quantity, $price, $currency);
         $this->cartService->upsertProduct($product);
         $this->assertSame(4, $this->cart->getProducts()->count());
-        $total = $this->cartService->updateCartsTotalInDefaultCurrency();
+        $total = $this->cartPriceCalculator->updateCartsTotalInDefaultCurrency();
         $this->assertSame(1227.4626555023924, $total);
     }
 

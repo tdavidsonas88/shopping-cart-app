@@ -1,8 +1,9 @@
 <?php
 
+use Data\Cart;
 use Data\Product;
 use PHPUnit\Framework\TestCase;
-use Service\ProductPrice;
+use Service\CartPriceCalculator;
 
 /**
  * Created by PhpStorm.
@@ -39,7 +40,8 @@ class ProductPriceTest extends TestCase
         $price = "99.99";
         $currency = "USD";
         $product = new Product($id, $name, $quantity, $price, $currency);
-        $productPrice = new ProductPrice(self::VALIUTOS_MAP);
+        $cart = new Cart();
+        $productPrice = new CartPriceCalculator($cart, self::VALIUTOS_MAP);
 
         $price = $productPrice->calculateProductPrice($product);
         $this->assertSame(263.13157894736844, $price);

@@ -9,20 +9,27 @@
 namespace Service;
 
 
+use Data\Cart;
 use Data\Product;
+use Doctrine\Common\Collections\ArrayCollection;
 
-class ProductPrice
+class CartPriceCalculator
 {
     /** @var float[] */
     private $valiutosMap;
 
-    /**WW
-     * CartServiceHelper constructor.
-     * @param float[] $valiutosMap
+    /** @var Cart */
+    private $cart;
+
+    /**
+     * CartPriceCalculator constructor.
+     * @param array $valiutosMap
+     * @param Cart $cart
      */
-    public function __construct(array $valiutosMap)
+    public function __construct(Cart $cart, array $valiutosMap)
     {
         $this->valiutosMap = $valiutosMap;
+        $this->cart = $cart;
     }
 
     /**
@@ -40,5 +47,20 @@ class ProductPrice
             throw new \Exception('Division by zero not allowed');
         }
         return $price;
+    }
+
+    /**
+     * @return float|int
+     * @throws \Exception
+     */
+    public function updateCartsTotalInDefaultCurrency()
+    {
+        $cartsTotal = 0;
+        /** @var ArrayCollection|Product[] $products */
+        $products = $this->cart->getProducts();
+        foreach ($products as $product) {
+            $cartsTotal += $this->calculateProductPrice($product);
+        }
+        return $cartsTotal;
     }
 }

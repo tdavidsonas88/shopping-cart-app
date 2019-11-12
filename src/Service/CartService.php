@@ -18,18 +18,13 @@ class CartService
     /** @var Cart */
     private $cart;
 
-    /** @var ProductPrice */
-    private $productPrice;
-
     /**
      * CartService constructor.
      * @param Cart $cart
-     * @param ProductPrice $productPrice
      */
-    public function __construct(Cart $cart, ProductPrice $productPrice)
+    public function __construct(Cart $cart)
     {
         $this->cart = $cart;
-        $this->productPrice = $productPrice;
     }
 
     /**
@@ -58,22 +53,6 @@ class CartService
             throw new \Exception('Nenumatyta situacija');
         }
         return $product;
-    }
-
-    /**
-     * @return Cart
-     */
-    public function getCart(): Cart
-    {
-        return $this->cart;
-    }
-
-    /**
-     * @param Cart $cart
-     */
-    public function setCart(Cart $cart): void
-    {
-        $this->cart = $cart;
     }
 
     private function addProduct(Product $product)
@@ -141,18 +120,19 @@ class CartService
     }
 
     /**
-     * @return float|int
-     * @throws \Exception
+     * @return Cart
      */
-    public function updateCartsTotalInDefaultCurrency()
+    public function getCart(): Cart
     {
-        $cartsTotal = 0;
-        /** @var ArrayCollection|Product[] $products */
-        $products = $this->cart->getProducts();
-        foreach ($products as $product) {
-            $cartsTotal += $this->productPrice->calculateProductPrice($product);
-        }
-        return $cartsTotal;
+        return $this->cart;
+    }
+
+    /**
+     * @param Cart $cart
+     */
+    public function setCart(Cart $cart): void
+    {
+        $this->cart = $cart;
     }
 
 }
